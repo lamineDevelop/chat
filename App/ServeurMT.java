@@ -15,13 +15,16 @@ public class ServeurMT  extends Thread {
     static boolean isInscriptionEnCours=true;
     int nb=0;
     List<Joueur> listJoueur= new ArrayList<>();
+    static ArrayList<String> coul=new ArrayList<>();
     public static void main(String[] args) {
+        choisirCombinaison();
         new ServeurMT().start();
         System.out.println("suite de l'pplication");
     }
 
     public void run() {
         try {
+
             ServerSocket serverSocket = new ServerSocket(4000);
             System.out.println("DEMARRAGE DU SERVEUR");
             while (true) {
@@ -61,7 +64,7 @@ public class ServeurMT  extends Thread {
                     String req = bw.readLine();
                     if(req.contains("##LOGIN##") && isInscriptionEnCours) {
                         String nomClient = req.substring(9,req.length());
-                        Joueur  joueur =new Joueur(nomClient,0,1);
+                        Joueur  joueur =new Joueur(nomClient,0,1,socket);
                         listJoueur.add(joueur);
                         System.out.println("Le client  " + nomClient + " a rejooint le jeu");
                         pw.println("Vous etes le joueur Num " + nb );
@@ -74,7 +77,6 @@ public class ServeurMT  extends Thread {
                             isInscriptionEnCours=false;
                             pw.println("*********** Le jeu commence ***********" );
                             System.out.println("E*********** Le jeu commence ***********");
-                            choisirCombinaison();
                         }
                     }
                 }
@@ -84,7 +86,7 @@ public class ServeurMT  extends Thread {
         }
     }
 
-    private void choisirCombinaison() {
+    private static void choisirCombinaison() {
         Map<Integer,String> couleurs = new HashMap<>();
         couleurs.put(1,"BLEU");
         couleurs.put(2,"BLANC");
@@ -94,7 +96,7 @@ public class ServeurMT  extends Thread {
         couleurs.put(6,"VERT");
         couleurs.put(7,"ORANGE");
         couleurs.put(8,"JAUNE");
-        int c1,c2,c3,c4,c5,c6,c7,c8;
+        int c1,c2,c3,c4;
             c1 = (int) (10 * Math.random() % 8 + 1);
 
         do {
@@ -113,33 +115,18 @@ public class ServeurMT  extends Thread {
             c4 = (int) (10 * Math.random() % 8 + 1);
         }while (c4==c3 || c4==c1 || c4==c2);
 
-        do {
-            c5 = (int) (10 * Math.random() % 8 + 1);
-        }while (c5==c1 || c5==c2 || c5==c3 || c5==c4 );
-
-        do {
-            c6 = (int) (10 * Math.random() % 8 + 1);
-        }while (c6==c1 || c6==c2 || c6==c3 || c6==c4 || c6==c5 );
-
-        do {
-            c7 = (int) (10 * Math.random() % 8 + 1);
-        }while (c7==c1 || c7==c2 || c7==c3 || c7==c4 || c7==c5 || c7==c6);
-
-
-        do {
-            c8 = (int) (10 * Math.random() % 8 + 1);
-        }while (c8==c1 || c8==c2 || c8==c3 || c8==c4 || c8==c5 || c8==c6 || c8==c7);
-
 
         System.out.println("AFFICHAGE DE LA COMBINAISON ");
         System.out.println(couleurs.get(c1));
         System.out.println(couleurs.get(c2));
         System.out.println(couleurs.get(c3));
         System.out.println(couleurs.get(c4));
-        System.out.println(couleurs.get(c5));
-        System.out.println(couleurs.get(c6));
-        System.out.println(couleurs.get(c7));
-        System.out.println(couleurs.get(c8));
-          }
+
+        coul.add(couleurs.get(c1));
+        coul.add(couleurs.get(c2));
+        coul.add(couleurs.get(c3));
+        coul.add(couleurs.get(c4));
+
+    }
 
 }
